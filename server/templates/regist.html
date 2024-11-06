@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Umbrella</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .instructions {
+            text-align: left;
+            margin-top: 20px;
+            font-size: 0.9em;
+            line-height: 1.5em;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register Umbrella</h2>
+        <form action="{{ url_for('register.register') }}" method="post">
+            <button type="submit">등록하기</button>
+        </form>
+        <div class="instructions">
+            <h3>우산 등록 절차 안내</h3>
+            <p><strong>Step 1:</strong> 접속자의 ID를 이용하여 우산 및 슬롯 정보가 자동 업데이트됩니다.<br>
+               - 예시: ID가 love인 사용자가 <strong>rental_box_1</strong>에 우산을 등록할 경우<br>
+               - <strong>umbrella 테이블</strong>: <br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;umbrella_id: 난수로 생성, user_id: love, count: 0, available: 1, location: rental_box_1<br>
+               - <strong>rental_box_1 테이블</strong>: <br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;slot: 선택된 슬롯 번호, status: 1, umbrella_id: 난수로 생성된 우산 ID, loaner_id: love
+            </p>
+            <p><strong>Step 2:</strong> 우산 정보를 QR 코드로 생성합니다.</p>
+            <p><strong>Step 3:</strong> 생성된 QR 코드를 출력하여 우산에 부착합니다.</p>
+            <p><strong>Step 4:</strong> 외부 리더기에 우산에 부착된 QR 코드를 인식시킵니다.</p>
+            <p><strong>Step 5:</strong> 슬롯 위치가 조정되고 자동으로 열립니다.</p>
+            <p><strong>Step 6:</strong> 우산을 거치한 후 내부 리더기에 QR 코드를 인식시킵니다.</p>
+            <p><strong>Step 7:</strong> 등록 완료</p>
+        </div>
+    </div>
+</body>
+</html>
