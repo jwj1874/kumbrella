@@ -13,3 +13,11 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor
     )
     return conn
+def update_count(umbrella_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    cur.execute('update umbrella set count = count + 1 where umbrella_id = %s', (umbrella_id,))
+    conn.commit()
+    cur.close()
+    conn.close()

@@ -3,6 +3,13 @@ from db import get_db_connection
 
 status_bp = Blueprint('status', __name__)
 
+def clear_session_except_logged_in_user():
+    keys_to_keep = ['logged_in', 'user_id']  # 유지할 키 리스트
+    keys_to_delete = [key for key in session.keys() if key not in keys_to_keep]
+
+    for key in keys_to_delete:
+        session.pop(key, None)  # 키가 존재하지 않아도 에러 없이 삭제
+
 @status_bp.route('/status_board')
 def status_board():
     location = request.args.get('location')
@@ -63,6 +70,7 @@ def status_board():
 
 @status_bp.route('/KUmbrella')
 def KUmbrella():
+    clear_session_except_logged_in_user()
     if 'logged_in' in session:
         conn = get_db_connection()
         cursor = conn.cursor()

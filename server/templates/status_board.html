@@ -69,7 +69,13 @@
                 {% if umbrella.state == "대여가능" %}
                     <a href="{{ url_for('rental.rent_umbrella', umbrella_id=umbrella.umbrella_id, slot=umbrella.slot) }}" class="link">대여가능</a>
                 {% elif umbrella.state == "우산등록" %}
-                    <a href="{{ url_for('register.register') }}" class="register-button">우산등록</a>
+                    <!-- POST 요청으로 전송하기 위해 form 사용 -->
+                    <form action="{{ url_for('register.register') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="umbrella_id" value="{{ umbrella.umbrella_id }}">
+                        <input type="hidden" name="location" value="{{ location }}">
+                        <input type="hidden" name="slot" value="{{ umbrella.slot }}">
+                        <button type="submit" class="register-button">우산등록</button>
+                    </form>
                 {% else %}
                     {{ umbrella.state }}
                 {% endif %}

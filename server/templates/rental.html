@@ -46,13 +46,13 @@
             background-color: #218838;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
 <div class="form-container">
     <h2>Rental Form</h2>
-    <form action="{{ url_for('rental.process_rental') }}" method="POST">
+    <form id="rentalForm" action="{{ url_for('rental.process_rental') }}" method="POST">
         <label for="destination">Destination:</label>
         <select name="destination" id="destination" onchange="fetchAvailableSlots()">
             <option value="">Select Destination</option>
@@ -98,6 +98,17 @@
             }
         });
     }
+
+    // 폼 제출 이벤트 가로채기
+    $('#rentalForm').on('submit', function(event) {
+        event.preventDefault();  // 기본 제출 동작 방지
+
+        // 팝업 창 표시
+        alert("대여가 완료되었습니다.");
+
+        // 팝업 후 폼을 제출
+        this.submit();
+    });
 </script>
 
 </body>

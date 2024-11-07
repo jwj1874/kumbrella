@@ -54,22 +54,22 @@
 
     <script>
         function confirmReturn() {
-            alert("반납이 완료되었습니다.");  // 반납 완료 메시지 팝업
+            alert("등록이 완료되었습니다.");  // 등록 완료 메시지 팝업
             window.location.href = "{{ url_for('status.KUmbrella') }}";  // 'status.KUmbrella' 라우트로 이동
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Umbrella Return</h1>
+        <h1>Umbrella Register</h1>
 
         <!-- 인식된 QR 코드 정보를 표시하는 부분 -->
-        <p class="qr-info">반납할 우산 ID: {{ umbrella_id }}</p>
+        <p class="qr-info">등록할 우산 ID: {{ umbrella_id }}</p>
         <p class="qr-info">위치: {{ location }}</p>
         <p class="qr-info">슬롯 번호: {{ slot }}</p>
 
         <!-- 반납 확인 버튼 -->
-        <button class="button" onclick="confirmReturn()">반납 확인</button>
+        <button class="button" onclick="confirmReturn()">등록 완료</button>
     </div>
 </body>
 </html>

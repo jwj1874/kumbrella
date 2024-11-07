@@ -103,7 +103,8 @@
     </div>
 
     <!-- 반납 버튼 추가 -->
-    <button class="button" onclick="location.href='/return'">반납</button>
+<button class="button" onclick="location.href='{{ url_for('return.return_process') }}'">반납</button>
+
 
     <!-- 로그아웃 버튼 추가 -->
     <button class="button" onclick="location.href='/logout'">로그아웃</button>

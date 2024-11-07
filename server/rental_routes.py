@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session, jsonify, flash
-from db import get_db_connection
+from db import get_db_connection, update_count
 
 rental_bp = Blueprint('rental', __name__)
 
@@ -16,8 +16,8 @@ def rent_umbrella():
     conn = get_db_connection()
     cur = conn.cursor()
     
-    # umbrella_id와 slot 정보를 사용하여 추가 로직을 처리할 수 있습니다.
-    # 예를 들어, 대여 처리 로직 또는 우산 정보를 표시하는 템플릿을 렌더링할 수 있습니다.
+    # umbrella_id와 slot 정보를 사용하여 추가 로직을 처리 가능
+    # 예를 들어, 대여 처리 로직 또는 우산 정보를 표시하는 템플릿을 렌더링 가능
     print(f"Renting umbrella ID: {umbrella_id}, Slot: {slot}")
     session['umbrella_id'] = umbrella_id
     session['slot'] = slot
@@ -37,7 +37,6 @@ def rent_umbrella():
     conn.close()
     
     
-    # 예시로 우산 정보를 렌더링할 템플릿을 만든다면:
     return render_template('rental.html', umbrella_id=umbrella_id, slot=slot)
 
 @rental_bp.route('/get_available_slots', methods=['POST'])
@@ -95,8 +94,10 @@ def process_rental():
             update {location}
             set status = 5, umbrella_id = %s, loaner_id = %s where umbrella_id = %s
         """
-        null = None
         cursor.execute(update_query, (None, None, umbrella_id,))
+        update_count(umbrella_id)
+        ##우산이 대여중 일때는 반납 위치를 location에 저장
+        cursor.execute('update umbrella set location = %s', (table_name,))
         conn.commit()
         flash("Rental process completed successfully.")
     except Exception as e:
