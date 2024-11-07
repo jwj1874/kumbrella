@@ -1,34 +1,35 @@
-import cv2
+import sys
+import pyqrcode
+import png
+from PIL import Image
 import os
-from pyzbar.pyzbar import decode
 
-# QR 코드를 읽고 발견된 QR 코드 파일을 삭제하는 함수
-#directoty_path 수정할것
-def read_and_delete_qr_code(directory_path="/home/woojin/kumbrella/pi_1/qrcode_templates"):
-    for filename in os.listdir(directory_path):
-        file_path = os.path.join(directory_path, filename)
+def create_qr():
+    if len(sys.argv) > 1:
+        umbrella_id = sys.argv[1]
+        print(f"Received umbrella_id: {umbrella_id}")  # 매개변수 출력
+    else:
+        print("error")
+        return
+
+    try:
+        data = umbrella_id
+        qr = pyqrcode.create(data)
         
-        # 이미지 파일만 처리 (png, jpg, jpeg 등)
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-            img = cv2.imread(file_path)
-            if img is not None:
-                qr_codes = decode(img)
-                
-                if qr_codes:
-                    # QR 코드 데이터 확인
-                    qr_data = qr_codes[0].data.decode("utf-8")
-                    print(qr_data)  # QR 데이터를 출력하여 서버에서 직접 받을 수 있도록 함
+        # 저장할 디렉터리 설정 (예: 현재 경로의 "qrcode_templates" 폴더)
+        # qrcode를 저장할 디렉터리는 실행파일과 같은 위치에 생성할것
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        save_dir = os.path.join(current_dir, "qrcode_templates")  # 원하는 디렉터리로 수정 가능
+        os.makedirs(save_dir, exist_ok=True)  # 디렉터리가 없으면 생성
 
-                    # QR 코드가 발견되면 파일 삭제
-                    os.remove(file_path)
-                    #print(f"{filename} 파일이 삭제되었습니다.", flush=True)  # 삭제된 파일 정보 출력
-                    
-                    return  # 함수 종료
-                else:
-                    print(f"{filename}에서 QR 코드가 감지되지 않았습니다.")
-            else:
-                print(f"{filename}는 이미지로 로드할 수 없습니다.")
+        # 다른 파일 이름으로 저장하려면 아래 경로를 수정하세요.
+        save_path = os.path.join(save_dir, f"{umbrella_id}_qrcode.png")
+        
+        # QR 코드 이미지 저장
+        qr.png(save_path, scale=6)
+        print("QR코드가 생성되었습니다:", save_path)
+        
+    except Exception as e:
+        print("QR 코드 생성에 실패했습니다:", e)
 
-    print("pi_1 디렉토리에서 QR 코드가 포함된 파일이 발견되지 않았습니다.")
-
-read_and_delete_qr_code()
+create_qr()
