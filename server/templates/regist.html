@@ -1,0 +1,115 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umbrella Registration</title>
+    <style>
+        /* 전체 화면 가운데 정렬 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 50%;
+            max-width: 600px;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .flash-messages {
+            color: #d9534f;
+            background-color: #f9e6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .flash-messages ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .flash-messages li {
+            margin: 5px 0;
+        }
+
+        p {
+            font-size: 18px;
+            color: #5cb85c;
+            margin-top: 20px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        input[type="hidden"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register Umbrella</h1>
+
+        <!-- 플래시 메시지 표시 -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              <ul>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <!-- 성공 메시지 -->
+        <p>The umbrella has been successfully registered and the QR code has been created.</p>
+        
+        <!-- 반납 페이지로 이동하는 버튼 status.KUmbrella, return.return_process-->
+        <div class="button-container">
+            <form action="{{ url_for('register.register_process') }}" method="GET">
+                <input type="hidden" name="umbrella_id" value="{{ umbrella_id }}">
+                <input type="hidden" name="location" value="{{ location }}">
+                <input type="hidden" name="slot" value="{{ slot }}">
+                
+                <button type="submit">Proceed to Return Process</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+
