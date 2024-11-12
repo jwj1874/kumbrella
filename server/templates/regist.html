@@ -80,7 +80,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Register Umbrella</h1>
+        <h1>우산 등록</h1>
 
         <!-- 플래시 메시지 표시 -->
         {% with messages = get_flashed_messages() %}
@@ -96,7 +96,7 @@
         {% endwith %}
 
         <!-- 성공 메시지 -->
-        <p>The umbrella has been successfully registered and the QR code has been created.</p>
+        <p>우산 정보 등록이 완료되었습니다. 출력된 QR코드를 우산에 부착해주세요.</p>
         
         <!-- 반납 페이지로 이동하는 버튼 status.KUmbrella, return.return_process-->
         <div class="button-container">
@@ -105,7 +105,7 @@
                 <input type="hidden" name="location" value="{{ location }}">
                 <input type="hidden" name="slot" value="{{ slot }}">
                 
-                <button type="submit">Proceed to Return Process</button>
+                <button type="submit">우산 반납하기</button>
             </form>
         </div>
     </div>
