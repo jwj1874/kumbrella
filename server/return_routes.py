@@ -54,6 +54,8 @@ def return_process():
     #대여시 카메라를 묶기 전까진 일단 라즈베리파이에서 qr생성후 보관
     #카메라 기능 추가하기 전까진 등록->반납, 대여->반납 무조건 짝지어서 하나씩만
     #대여를 하면 qr코드가 생성되지 않기 때문에 반납 프로세스가 불가능..
+    ### 수정해야 할 사항 : qr코드를 통해 umbrella_id를 확인하고 현재 location을 확인 한 후
+    ### umbrella table에서의 location과 qr코드를 인식한 보관함의 위치가 동일한지 확인하는 과정 필요
     location = session.get('temp_location')
     print("location :", location)
     if location == 'rental_box_0':
