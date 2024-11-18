@@ -64,7 +64,7 @@
         {% for umbrella in umbrella_data %}
         <tr>
             <td>{{ umbrella.slot }}</td>  <!-- 슬롯 번호 -->
-            <td>{{ umbrella.umbrella_id if umbrella.umbrella_id else 'N/A' }}</td>  <!-- 우산 ID 표시 -->
+            <td>{{ umbrella.umbrella_id if umbrella.umbrella_id else 'N/A' }}</td>  <!-- 우산 ID 표시 (최종적으로는 umbrellla_id 표시 x && cnrkwjrdls apah emddmf vytlgksms qkdgiddmfh wlsgod)-->
             <td>
                 {% if umbrella.state == "대여가능" %}
                     <a href="{{ url_for('rental.rent_umbrella', umbrella_id=umbrella.umbrella_id, slot=umbrella.slot) }}" class="link">대여가능</a>

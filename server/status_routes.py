@@ -2,7 +2,10 @@ from flask import Blueprint, request, render_template, flash, redirect, url_for,
 from db import get_db_connection
 
 status_bp = Blueprint('status', __name__)
-
+## 수정사항 : statusoard에 umbrella id 삭제(사용자에게 보이지 않게/ 우산의 특징 등을 ..?/메모 등을 추가/ 우산을 통일했을 때 우산 선택의 의미가 없..)
+##            
+##
+##
 def clear_session_except_logged_in_user():
     keys_to_keep = ['logged_in', 'user_id']  # 유지할 키 리스트
     keys_to_delete = [key for key in session.keys() if key not in keys_to_keep]

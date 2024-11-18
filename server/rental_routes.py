@@ -22,7 +22,6 @@ def rent_umbrella():
     session['umbrella_id'] = umbrella_id
     session['slot'] = slot
     # 우산을 선택한 시점에 우산의 available은 0이 되어 다른 사람이 선택할 수 없게 설정
-    # 우산의 현재 보관함에서 대여된 우산이 업데이트 되지 않는 문제점 해결할것
     update_query = """
         update umbrella
         set available = 0
