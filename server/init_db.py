@@ -14,7 +14,7 @@ def create_database(database_name, rental_box_EA):
         cur = connection.cursor()
         
         # 데이터베이스 생성
-        cur.execute(f"CREATE DATABASE IF NOT EXISTS `{database_name}`")
+        cur.execute(f"CREATE DATABASE IF NOT EXISTS `{database_name}`CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
         print(f"Database '{database_name}' created successfully")
         
         # 생성한 데이터베이스 사용
