@@ -92,7 +92,7 @@ def process_rental():
         print("Updating location table:", location)  # 디버깅용 출력
         update_query = f"""
             update {location}
-            set status = 5, umbrella_id = %s, renter_id = %s where umbrella_id = %s
+            set status = 5, umbrella_id = %s, renter_id = %s where umbrella_id = %s AND status = 1
         """
         cursor.execute(update_query, (None, None, umbrella_id,))
         update_count(umbrella_id)
