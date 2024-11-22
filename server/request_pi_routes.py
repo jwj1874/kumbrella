@@ -4,13 +4,13 @@ ip = "192.168.137.11"
 pi_user = "woojin"
 pi_password = "woojin"
 #ip = "172.20.10.7"
-#pi_user = "minsoek"
-#pi_password = "minsoek"
+#pi_user = "minseok"
+#pi_password = "minseok"
 #각 라즈베리파이마다 정보 저장
 rental_box = [{"ip" : "192.168.137.11", "pi_user" : "woojin", "pi_password" : "woojin", "location" : "pi_1"},
               {"ip" : "192.168.137.11", "pi_user" : "woojin", "pi_password" : "woojin", "location" : "pi_2"}]
-#rental_box = [{"ip" : "172.20.10.7", "pi_user" : "minsoek", "pi_password" : "minsoek", "location" : "pi_1"},
-#              {"ip" : "172.20.10.7", "pi_user" : "minsoek", "pi_password" : "minsoek", "location" : "pi_2"}]
+#rental_box = [{"ip" : "172.20.10.7", "pi_user" : "minseok", "pi_password" : "minsoek", "location" : "pi_1"},
+#              {"ip" : "172.20.10.7", "pi_user" : "minseok", "pi_password" : "minsoek", "location" : "pi_2"}]
 
 # 일단은 라즈베리파이 하나에 2개의 디렉토리를 생성하고 두 디렉토리를 각각 보관함이라 가정한 후 진행하겠음
 # 라즈베리파이를 두개로 분리한다면 수정할 부분 : rental_box의 location을 매개변수로 사용하던 함수들을 라즈베리파이의 ip로 수정
@@ -18,7 +18,7 @@ def create_qr_pi(location, username, password, umbrella_id):
     #실행할 파일의 위치
     location = 'pi_1' if location == 'rental_box_0' else 'pi_2'
     qr_create_path = f"/home/woojin/kumbrella/{location}/create_qrcode.py"
-    #qr_create_path = f"/home/minsoek/kumbrella/{location}/create_qrcode.py"
+    #qr_create_path = f"/home/minseok/kumbrella/{location}/create_qrcode.py"
     
     command = f'python3 {qr_create_path} {umbrella_id}'
     ip = "192.168.137.11"
@@ -40,7 +40,7 @@ def create_qr_pi(location, username, password, umbrella_id):
 def read_qr_pi(location, username, password):
     location = 'pi_1' if location == 'rental_box_0' else 'pi_2'
     qr_read_path = f"/home/woojin/kumbrella/{location}/read_qrcode.py"  # Raspberry Pi의 QR 코드 읽기 스크립트 경로
-#    qr_read_path = f"/home/minsoek/kumbrella/{location}/read_qrcode.py"  # Raspberry Pi의 QR 코드 읽기 스크립트 경로
+#    qr_read_path = f"/home/minseok/kumbrella/{location}/read_qrcode.py"  # Raspberry Pi의 QR 코드 읽기 스크립트 경로
 
     command = f'python3 {qr_read_path}'
 
