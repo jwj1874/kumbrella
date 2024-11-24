@@ -9,8 +9,8 @@ pi_password = "woojin"
 #각 라즈베리파이마다 정보 저장
 rental_box = [{"ip" : "192.168.137.11", "pi_user" : "woojin", "pi_password" : "woojin", "location" : "pi_1"},
               {"ip" : "192.168.137.11", "pi_user" : "woojin", "pi_password" : "woojin", "location" : "pi_2"}]
-#rental_box = [{"ip" : "172.20.10.7", "pi_user" : "minseok", "pi_password" : "minsoek", "location" : "pi_1"},
-#              {"ip" : "172.20.10.7", "pi_user" : "minseok", "pi_password" : "minsoek", "location" : "pi_2"}]
+#rental_box = [{"ip" : "172.20.10.7", "pi_user" : "minseok", "pi_password" : "minseok", "location" : "pi_1"},
+#              {"ip" : "172.20.10.7", "pi_user" : "minseok", "pi_password" : "minseok", "location" : "pi_2"}]
 
 # 일단은 라즈베리파이 하나에 2개의 디렉토리를 생성하고 두 디렉토리를 각각 보관함이라 가정한 후 진행하겠음
 # 라즈베리파이를 두개로 분리한다면 수정할 부분 : rental_box의 location을 매개변수로 사용하던 함수들을 라즈베리파이의 ip로 수정
@@ -22,6 +22,7 @@ def create_qr_pi(location, username, password, umbrella_id):
     
     command = f'python3 {qr_create_path} {umbrella_id}'
     ip = "192.168.137.11"
+   #ip = "172.20.10.7"
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
