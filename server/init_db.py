@@ -7,7 +7,9 @@ def create_database(database_name, rental_box_EA):
         connection = pymysql.connect(
             host="localhost",
             user="woojin",
+            #user="minseok",
             password="woojin",
+            #password="minseok",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -88,7 +90,9 @@ def delete_database(database_name):
         connection = pymysql.connect(
             host="localhost",
             user="woojin",
+            #user="minseok",
             password="woojin",
+            #password="minseok",
             charset="utf8mb4"
         )
         
