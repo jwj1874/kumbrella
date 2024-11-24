@@ -27,15 +27,16 @@ def create_database(database_name, rental_box_EA):
                 password VARCHAR(100),
                 name VARCHAR(100),
                 phone VARCHAR(100),
-                email VARCHAR(100)
+                email VARCHAR(100),
+                point INT(10) default 15
             )
         """)
         print("User table is created")
         woojin = hash_password('woojin')
         min0310 = hash_password('min0310')
         
-        cur.execute('insert into user values ("woojin", %s, "전우진", "01000000000", "jonwoojin@gmail.com")', (woojin,))
-        cur.execute('insert into user values ("kangmin0310", %s, "강민석", "01000000000", "kangmin9370@naver.com")', (min0310))
+        cur.execute('insert into user values ("woojin", %s, "전우진", "01000000000", "jonwoojin@gmail.com","15")', (woojin,))
+        cur.execute('insert into user values ("kangmin0310", %s, "강민석", "01000000000", "kangmin9370@naver.com","15")', (min0310))
         
         # umbrella 테이블 생성
         cur.execute("""
