@@ -1,58 +1,41 @@
-import logging
-from picamera2 import Picamera2
 import cv2
 from pyzbar.pyzbar import decode
 import time
 import os
 
-logging.getLogger("picamera2").setLevel(logging.CRITICAL)
+# OpenCV 로그 비활성화
+os.environ['OPENCV_LOG_LEVEL'] = 'SILENT'
+# GStreamer 로그 수준 비활성화
+os.environ["GST_DEBUG"] = "0"
 
-def suppress_libcamera_logs():
-    """Suppress libcamera logs by redirecting stderr temporarily."""
-    devnull = os.open(os.devnull, os.O_RDWR)
-    os.dup2(devnull, 2)  
-    os.close(devnull)
+def read_qr_from_camera():
+    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)  # Video4Linux2 백엔드 사용
 
-def process_frame(frame):
-    """
-    Process a single frame to detect and decode QR codes.
-    """
-    qr_codes = decode(frame)
-    for qr in qr_codes:
-        data = qr.data.decode('utf-8')
-        print(data)
-        return True  
-    return False  
+    if not cap.isOpened():
+        return None
+    last_detect_time = time.time()
 
-def main():
-    suppress_libcamera_logs()  
+    while True:
+        # 프레임 읽기
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    picam2 = Picamera2()
-    picam2.preview_configuration.main.size = (640, 480)  
-    picam2.preview_configuration.main.format = "RGB888"  
-    picam2.preview_configuration.align()
-    picam2.configure("preview")
-    
-    picam2.start()
+        # QR 코드 인식
+        decoded_objects = decode(frame)
+        if decoded_objects:
+            for obj in decoded_objects:
+                qr_data = obj.data.decode('utf-8')
+                print(qr_data)
+                cap.release()
+                return qr_data
 
-    start_time = time.time()  
-    try:
-        while True:
-            frame = picam2.capture_array()
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-            if process_frame(frame):
-                break  
-            
-            if time.time() - start_time > 10:
-                print("No QR Code detected within 10 seconds. Exiting...")
-                break
+        # QR 코드가 10초 동안 인식되지 않으면 종료
+        current_time = time.time()
+        if current_time - last_detect_time > 10:
+            break
 
-            time.sleep(0.1)
+    cap.release()
+    return None
 
-    except KeyboardInterrupt:
-        print("Exiting...")
-    finally:
-        picam2.stop()
-
-if __name__ == "__main__":
-    main()
+read_qr_from_camera()
