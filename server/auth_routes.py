@@ -139,7 +139,7 @@ def login():
         if user:
             return redirect(url_for('status.KUmbrella'))
         else:
-            flash("Invalid credentials. Please try again.")
+            flash("아이디 또는 비밀번호가 틀렸습니다.")
             return redirect(url_for('auth.login'))
     return render_template('login.html')
 

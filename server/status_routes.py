@@ -2,19 +2,21 @@ from flask import Blueprint, request, render_template, flash, redirect, url_for,
 from db import get_db_connection
 
 status_bp = Blueprint('status', __name__)
-
+"""
 def clear_session_except_logged_in_user():
     keys_to_keep = ['logged_in', 'user_id']  # 유지할 키 리스트
     keys_to_delete = [key for key in session.keys() if key not in keys_to_keep]
 
     for key in keys_to_delete:
         session.pop(key, None)  # 키가 존재하지 않아도 에러 없이 삭제
+"""
 
+'''
 @status_bp.route('/status_board')
 def status_board():
     location = request.args.get('location')
     if location not in ['A', 'B']:
-        flash("Invalid location.")
+        #flash("Invalid location.")
         return redirect(url_for('status.KUmbrella'))
     
     conn = get_db_connection()
@@ -36,7 +38,7 @@ def status_board():
     conn.close()
     
     # 총 5개의 슬롯을 확보하고, 슬롯에 따른 상태를 설정
-    total_slots = 5
+    total_slots = 8
     status_data = []
     
     for slot in range(1, total_slots + 1):
@@ -66,11 +68,73 @@ def status_board():
     available_count = sum(1 for umbrella in status_data if umbrella['state'] == "대여가능")
     
     return render_template('status_board.html', umbrella_data=status_data, available_count=available_count, location=location)
+'''
+
+@status_bp.route('/status_board')
+def status_board():
+    location = request.args.get('location')
+    if location not in ['A', 'B']:
+        return redirect(url_for('status.KUmbrella'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # location에 따라 조인할 테이블 선택 (테이블 이름만 변경)
+    rental_box_table = 'rental_box_0' if location == 'A' else 'rental_box_1'
+    
+    # umbrella 테이블에서 count 값을 포함한 데이터 가져오기
+    query = f"""
+        SELECT 
+            r.slot,
+            u.umbrella_id,
+            u.count,
+            u.available,
+            r.status
+        FROM {rental_box_table} r
+        LEFT JOIN umbrella u ON u.umbrella_id = r.umbrella_id
+        ORDER BY r.slot
+    """
+    cursor.execute(query)
+    umbrella_data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    total_slots = 8
+    status_data = []
+
+    # 슬롯별 상태 및 count 값 포함
+    for slot in range(1, total_slots + 1):
+        matching_umbrella = next((u for u in umbrella_data if u['slot'] == slot), None)
+
+        if matching_umbrella and matching_umbrella['umbrella_id'] is not None:
+            # 상태 설정
+            if matching_umbrella['status'] == 0:
+                state = "대여중"
+            elif matching_umbrella['status'] == 1:
+                state = "대여가능"
+            elif matching_umbrella['status'] == 3:
+                state = "반납예정"
+            elif matching_umbrella['status'] == 4:
+                state = "고장"
+            elif matching_umbrella['status'] == 5:
+                state = "우산등록"
+            umbrella_id = matching_umbrella['umbrella_id']
+            umbrella_count = matching_umbrella['count']  # count 값 추가
+        else:
+            state = "우산등록"
+            umbrella_id = None
+            umbrella_count = 0
+
+        status_data.append({'slot': slot, 'umbrella_id': umbrella_id, 'count': umbrella_count, 'state': state})
+        print(umbrella_data, '\n')
+
+    return render_template('status_board.html', umbrella_data=status_data, location=location)
 
 
+'''
 @status_bp.route('/KUmbrella')
 def KUmbrella():
-    clear_session_except_logged_in_user()
+    #clear_session_except_logged_in_user()
     if 'logged_in' in session:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -100,5 +164,52 @@ def KUmbrella():
         
         user_id = session['user_id']
         return render_template('KUmbrella.html', available_count_A=available_count_A, available_count_B=available_count_B, user_id=user_id)
+    else:
+        return redirect(url_for('auth.login'))
+'''
+
+@status_bp.route('/KUmbrella')
+def KUmbrella():
+    if 'logged_in' in session:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # location이 A와 B인 우산 데이터를 가져오며 count 포함
+        query_A = """
+            SELECT 
+                COUNT(*) AS total_count,
+                SUM(CASE WHEN u.available = 1 AND r.status = 1 THEN 1 ELSE 0 END) AS available_count,
+                SUM(u.count) AS total_count_A
+            FROM umbrella u
+            LEFT JOIN rental_box_0 r ON u.umbrella_id = r.umbrella_id
+        """
+        cursor.execute(query_A)
+        summary_A = cursor.fetchone()
+
+        query_B = """
+            SELECT 
+                COUNT(*) AS total_count,
+                SUM(CASE WHEN u.available = 1 AND r.status = 1 THEN 1 ELSE 0 END) AS available_count,
+                SUM(u.count) AS total_count_B
+            FROM umbrella u
+            LEFT JOIN rental_box_1 r ON u.umbrella_id = r.umbrella_id
+        """
+        cursor.execute(query_B)
+        summary_B = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        user_id = session['user_id']
+        return render_template(
+            'KUmbrella.html',
+            total_count_A=summary_A['total_count'],
+            available_count_A=summary_A['available_count'],
+            total_count_B=summary_B['total_count'],
+            available_count_B=summary_B['available_count'],
+            total_count_A_summary=summary_A['total_count_A'],  # count 합계
+            total_count_B_summary=summary_B['total_count_B'],  # count 합계
+            user_id=user_id
+        )
     else:
         return redirect(url_for('auth.login'))

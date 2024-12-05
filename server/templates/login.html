@@ -68,7 +68,7 @@
         <h1>Login</h1>
 
         <!-- 오류 메시지 표시 -->
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages() %}    <!-- auth_routes.py의 142번째 줄 오류 메시지 전달-->
             {% if messages %}
                 <div class="error-message">
                     {% for message in messages %}

@@ -6,36 +6,40 @@ def create_database(database_name, rental_box_EA):
         # pymysql을 사용하여 MariaDB/MySQL에 연결
         connection = pymysql.connect(
             host="localhost",
-            user="woojin",
-            password="woojin",
+            #user="woojin",
+            #password="woojin",
+            user="minseok",
+            password="minseok",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor
         )
         cur = connection.cursor()
         
         # 데이터베이스 생성
-        cur.execute(f"CREATE DATABASE IF NOT EXISTS `{database_name}`")
+        cur.execute(f"CREATE DATABASE IF NOT EXISTS `{database_name}`CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci") # 데이터베이스 생성
         print(f"Database '{database_name}' created successfully")
         
         # 생성한 데이터베이스 사용
         cur.execute(f"USE `{database_name}`")
         
-        # user 테이블 생성
+        # user 테이블 생성  , point 초기값 15
         cur.execute("""
             CREATE TABLE IF NOT EXISTS user (
                 user_id VARCHAR(100),
                 password VARCHAR(100),
                 name VARCHAR(100),
                 phone VARCHAR(100),
-                email VARCHAR(100)
+                email VARCHAR(100),
+                point INT(10) default 15,
+                rp BOOLEAN default false
             )
         """)
         print("User table is created")
         woojin = hash_password('woojin')
         min0310 = hash_password('min0310')
         
-        cur.execute('insert into user values ("woojin", %s, "전우진", "01000000000", "jonwoojin@gmail.com")', (woojin,))
-        cur.execute('insert into user values ("kangmin0310", %s, "강민석", "01000000000", "kangmin9370@naver.com")', (min0310))
+        cur.execute('insert into user values ("woojin", %s, "전우진", "01000000000", "jonwoojin@gmail.com","15", false)', (woojin,)) #point 추가
+        cur.execute('insert into user values ("kangmin0310", %s, "강민석", "01000000000", "kangmin9370@naver.com","15", false)', (min0310))
         
         # umbrella 테이블 생성
         cur.execute("""
@@ -63,7 +67,7 @@ def create_database(database_name, rental_box_EA):
             """)
             print(f"Rental box {i} is created")
             
-            for slot_num in range(1, 6):  # slot 번호 1에서 5까지
+            for slot_num in range(1, 9):  # slot 번호 1에서 5까지 -> slot 번호 1에서 8까지
                 cur.execute(f"""
                     INSERT IGNORE INTO rental_box_{i} (slot, status, umbrella_id, renter_id)
                     VALUES (%s, %s, %s, %s)
@@ -86,8 +90,10 @@ def delete_database(database_name):
         # pymysql을 사용하여 MariaDB/MySQL에 연결
         connection = pymysql.connect(
             host="localhost",
-            user="woojin",
-            password="woojin",
+            #user="woojin",
+            #password="woojin",
+            user="minseok",
+            password="minseok",
             charset="utf8mb4"
         )
         

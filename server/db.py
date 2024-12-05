@@ -7,7 +7,9 @@ def get_db_connection():
     conn = pymysql.connect(
         host="localhost",
         user="woojin",
+        #user="minseok",
         password="woojin",
+        #password="minseok",
         database="KUmbrella",
         charset="utf8mb4",
         cursorclass=pymysql.cursors.DictCursor

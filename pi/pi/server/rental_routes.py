@@ -1,10 +1,19 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session, jsonify, flash
 from db import get_db_connection, update_count
+from point_routes import deduct_renter_points, reward_owner_points
 
 rental_bp = Blueprint('rental', __name__)
 
 @rental_bp.route('/rental')
 def rental():
+    #대여중인 우산이 존재하는지 확인
+    user_id = session['user_id']
+    cursor.execute("select rp from user where user_id = %", (user_id,))
+    rp = cursor.fetchone()
+    if rp == True:
+        print("대여중인 우산이 존재합니다")
+        return redirect(url_for('status.KUmbrella', location=destination))
+    #
     # 대여 페이지 렌더링
     return render_template('rental.html')
 
@@ -96,9 +105,18 @@ def process_rental():
         """
         cursor.execute(update_query, (None, None, umbrella_id,))
         update_count(umbrella_id)
+        
         ##우산이 대여중 일때는 반납 위치를 location에 저장
         cursor.execute('update umbrella set location = %s', (table_name,))
+        
+        # 포인트 관련 기능 호출
+        deduct_renter_points(renter_id)
+        reward_owner_points(umbrella_id)
+
+        #대여중인 우산이 존재하는것을 DB에 저장
+        cursor.execute("update user set rp = True where user_id = %s", (user_id,))
         conn.commit()
+        
         flash("Rental process completed successfully.")
     except Exception as e:
         conn.rollback()

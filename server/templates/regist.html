@@ -83,9 +83,9 @@
         <h1>우산 등록</h1>
 
         <!-- 플래시 메시지 표시 -->
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages() %}  <!-- regist_routes.py의 100번째 줄 오류 메시지 전달-->
           {% if messages %}
-            <div class="flash-messages">
+            <div class="flash-messages"> 
               <ul>
                 {% for message in messages %}
                   <li>{{ message }}</li>
@@ -98,9 +98,9 @@
         <!-- 성공 메시지 -->
         <p>우산 정보 등록이 완료되었습니다. 출력된 QR코드를 우산에 부착해주세요.</p>
         
-        <!-- 반납 페이지로 이동하는 버튼 status.KUmbrella, return.return_process-->
+        <!-- 반납 페이지로 이동하는 버튼 status.KUmbrella, return.return_process, register.register_process-->
         <div class="button-container">
-            <form action="{{ url_for('register.register_process') }}" method="GET">
+            <form action="{{ url_for('status.KUmbrella') }}" method="GET">
                 <input type="hidden" name="umbrella_id" value="{{ umbrella_id }}">
                 <input type="hidden" name="location" value="{{ location }}">
                 <input type="hidden" name="slot" value="{{ slot }}">

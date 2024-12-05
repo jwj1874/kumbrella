@@ -41,7 +41,7 @@ def register():
         location = 'rental_box_0' if location == 'A' else 'rental_box_1'
         print(umbrella_id, location, slot)
         if not umbrella_id or not location:
-            flash("All fields are required.")
+            #flash("All fields are required.")
             return redirect(url_for('register.register'))
         #일련번호 생성 과정이 필요---
         new_umbrella_id = generate_unique_serial()
@@ -71,8 +71,10 @@ def register():
         #카메라 추가시 삭제할 내용#############
         session['temp_location'] = location 
         #####################################
+        session['original_umbrella_id'] = new_umbrella_id
+        #반납 시 사용할 우산 정보
         
-        flash("Umbrella registered successfully!")
+        #flash("Umbrella registered successfully!")
     
         return render_template('regist.html', umbrella_id=new_umbrella_id, location=location, slot=slot)
     
@@ -90,18 +92,18 @@ def register_process():
     location = session.get('temp_location')
     print("location :", location)
     if location == 'rental_box_0':
-        umbrella_id = read_qr_pi(location, rental_box[0]['pi_user'], rental_box[0]['pi_password'])
+        umbrella_id = read_qr_pi(location, rental_box[0]['pi_user'], rental_box[0]['pi_password'], 0)
     else:
-        umbrella_id = read_qr_pi(location, rental_box[1]['pi_user'], rental_box[1]['pi_password'])
+        umbrella_id = read_qr_pi(location, rental_box[1]['pi_user'], rental_box[1]['pi_password'], 0)
 
     if umbrella_id:
         location, slot = update_return(umbrella_id)
         location = 'A' if location == 'rental_box_0' else 'B'
-        flash("Umbrella has been successfully register.")
+        flash("우산 등록이 완료되었습니다.")
         return render_template('register_step_2.html', 
             umbrella_id=umbrella_id, 
             location=location, 
             slot=slot)
     else:
-        flash("No umbrella ID found in QR code.")
+        flash("QR코드를 읽을 수 없습니다.")
         return redirect(url_for('status.KUmbrella'))
