@@ -71,6 +71,8 @@ def register():
         #카메라 추가시 삭제할 내용#############
         session['temp_location'] = location 
         #####################################
+        session['original_umbrella_id'] = new_umbrella_id
+        #반납 시 사용할 우산 정보
         
         flash("Umbrella registered successfully!")
     
@@ -90,9 +92,9 @@ def register_process():
     location = session.get('temp_location')
     print("location :", location)
     if location == 'rental_box_0':
-        umbrella_id = read_qr_pi(location, rental_box[0]['pi_user'], rental_box[0]['pi_password'])
+        umbrella_id = read_qr_pi(location, rental_box[0]['pi_user'], rental_box[0]['pi_password'], 0)
     else:
-        umbrella_id = read_qr_pi(location, rental_box[1]['pi_user'], rental_box[1]['pi_password'])
+        umbrella_id = read_qr_pi(location, rental_box[1]['pi_user'], rental_box[1]['pi_password'], 0)
 
     if umbrella_id:
         location, slot = update_return(umbrella_id)
