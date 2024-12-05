@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KUmbrella Dashboard</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs-MpkkdDE3pM5rH3vFyIt8fIh8VXPlqs"></script>
     <style>
-        /* 전체 화면 중앙 정렬 */
         body {
             display: flex;
             justify-content: center;
@@ -17,98 +17,58 @@
             font-family: Arial, sans-serif;
             background-color: #f4f6f8;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #666;
-            margin-bottom: 20px;
-        }
         .map-container {
-            position: relative;
-            display: inline-block;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            height: 400px;
             margin-bottom: 20px;
-        }
-        .map-container img {
-            max-width: 100%;
-            border-radius: 10px;
-            height: auto;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
-        }
-        /* 점 스타일 */
-        .dot {
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            background-color: #ff5e5e;
-            border-radius: 50%;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-            transform: translate(-50%, -50%);
-            transition: transform 0.2s, background-color 0.3s;
-            cursor: pointer;
-        }
-        .dot:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background-color: #e04a4a;
-        }
-        /* 첫 번째 점 위치 */
-        .dot1 {
-            top: 60%;
-            left: 61.5%;
-        }
-        /* 두 번째 점 위치 */
-        .dot2 {
-            top: 43%;
-            left: 32%;
-        }
-        /* 버튼 스타일 */
-        .button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            margin: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome, {{ user_id }}!</h1> <!-- 로그인한 사용자 ID 표시 -->
-    <p>Click the point on the map!</p>
+    <h1>환영합니다, {{ user_id }}!</h1>
+    <p>지도의 마커를 클릭하세요!</p>
 
-    <!-- 지도 이미지와 점 표시 -->
+    <!-- 지도 표시 -->
     <div class="map-container">
-        <img src="{{ url_for('static', filename='map.png') }}" alt="Map Image">
-        <!-- 첫 번째 점 (location=A) -->
-        <a href="/status_board?location=A"><div class="dot dot1">{{ available_count_A }}</div></a>
-        <!-- 두 번째 점 (location=B) -->
-        <a href="/status_board?location=B"><div class="dot dot2">{{ available_count_B }}</div></a>
+        <div id="map" style="width: 100%; height: 100%;"></div>
     </div>
 
-    <!-- 반납 버튼 추가 -->
-<button class="button" onclick="location.href='{{ url_for('return.scan_qr_code') }}'">반납</button>
-<!-- 고장 버튼 추가 -->
-<button class="button" onclick="location.href='{{ url_for('broken.broken_process') }}'">고장</button>
-
-
-    <!-- 로그아웃 버튼 추가 -->
-    <button class="button" onclick="location.href='/logout'">로그아웃</button>
+    <button onclick="location.href='{{ url_for('return.scan_qr_code') }}'">반납</button>
+    <button onclick="location.href='{{ url_for('broken.broken_process') }}'">고장</button>
+    <button onclick="location.href='/logout'">로그아웃</button>
 </body>
+<script>
+  function initMap() {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: 37.5410, lng: 127.0762 }, // 공학관과 상허기념도서관 중간
+      zoom: 16,
+    });
+
+    // 공학관 마커
+    const engineeringBuilding = { lat: 37.5407, lng: 127.0785 };
+    const markerA = new google.maps.Marker({
+      position: engineeringBuilding,
+      map: map,
+      label: "{{ available_count_A }}",
+      title: "공학관",
+    });
+    markerA.addListener("click", () => {
+      window.location.href = "/status_board?location=A";
+    });
+
+    // 상허기념도서관 마커
+    const library = { lat: 37.5413, lng: 127.0738 };
+    const markerB = new google.maps.Marker({
+      position: library,
+      map: map,
+      label: "{{ available_count_B }}",
+      title: "상허기념도서관",
+    });
+    markerB.addListener("click", () => {
+      window.location.href = "/status_board?location=B";
+    });
+  }
+
+  window.onload = initMap;
+</script>
 </html>
