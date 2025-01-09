@@ -21,6 +21,7 @@ def create_qr_pi(location, username, password, umbrella_id):
     qr_create_path = f"/home/minseok/kumbrella/{location}/create_qrcode.py"
     
     command = f'python3 {qr_create_path} {umbrella_id}'
+    qr_print_command = f"lp /home/woojin/kumbrella/{location}/qrcode_templates/{umbrella_id}_qrcode.png"
     ip = "192.168.137.11"
     #ip = "192.168.137.111"
 
@@ -33,6 +34,7 @@ def create_qr_pi(location, username, password, umbrella_id):
         
         print("Output:", stdout.read().decode())
         print("Error:", stderr.read().decode())
+        stdin, stdout, stderr = ssh.exec_command(qr_print_command)
         
         ssh.close()
     except Exception as e:
